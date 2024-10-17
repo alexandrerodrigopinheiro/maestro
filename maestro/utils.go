@@ -15,35 +15,32 @@ func runCommand(name string, args ...string) error {
 }
 
 // InitializeProject sets up the initial folder structure and initializes a Go module.
-func InitializeProject(projectName string) {
-	if projectName == "" {
-		fmt.Println("Please provide a project name.")
-		return
-	}
-
+func InitializeProject(projectName string) error {
 	fmt.Printf("Initializing a new Go project: %s\n", projectName)
+
 	// Create project root directory
 	err := os.Mkdir(projectName, 0755)
 	if err != nil {
-		fmt.Printf("Failed to create project directory: %s\n", err)
-		return
+		return fmt.Errorf("failed to create project directory: %s", err)
+	}
+
+	// Verify if the directory was created successfully
+	if _, err := os.Stat(projectName); os.IsNotExist(err) {
+		return fmt.Errorf("project directory does not exist after creation attempt")
 	}
 
 	// Navigate to project directory
 	if err := os.Chdir(projectName); err != nil {
-		fmt.Printf("Failed to navigate to project directory: %s\n", err)
-		return
+		return fmt.Errorf("failed to navigate to project directory: %s", err)
 	}
 
 	// Initialize Go module
 	if err := runCommand("go", "mod", "init", projectName); err != nil {
-		fmt.Printf("Failed to initialize Go module: %s\n", err)
-		return
+		return fmt.Errorf("failed to initialize Go module: %s", err)
 	}
 
-	// Create initial folders similar to a Laravel structure for Go backend and React frontend
+	// Create initial backend folders similar to a Laravel structure
 	folders := []string{
-		// Backend (Go) folders
 		"backend/cmd",
 		"backend/pkg",
 		"backend/internal",
@@ -53,21 +50,22 @@ func InitializeProject(projectName string) {
 		"backend/controllers",
 		"backend/models",
 		"backend/middleware",
-		// Frontend (React TypeScript) folders
-		"frontend/public",
-		"frontend/src/components",
-		"frontend/src/pages",
-		"frontend/src/services",
-		"frontend/src/styles",
-		"frontend/src/utils",
-		"frontend/src/assets",
 	}
 	for _, folder := range folders {
 		if err := os.MkdirAll(folder, 0755); err != nil {
-			fmt.Printf("Failed to create folder %s: %s\n", folder, err)
-			return
+			return fmt.Errorf("failed to create folder %s: %s", folder, err)
 		}
 	}
 
-	fmt.Println("Project initialized successfully!")
+	return nil
+}
+
+// CleanupProject removes the project directory in case of errors during setup.
+func CleanupProject(projectName string) {
+	fmt.Printf("Cleaning up incomplete project '%s'...\n", projectName)
+	if err := os.RemoveAll(projectName); err != nil {
+		fmt.Printf("Failed to clean up project directory: %s\n", err)
+	} else {
+		fmt.Println("Project cleanup completed.")
+	}
 }

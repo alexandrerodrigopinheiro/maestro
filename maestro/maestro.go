@@ -16,7 +16,6 @@ var commands = map[string]Command{
 	"serve":        &ServeCommand{},
 	"make:model":   &MakeModelCommand{},
 	"make:migrate": &NewMigrationCommand{},
-	"make:schema":  &MakeSchemaCommand{},
 }
 
 // Main function to handle commands.
@@ -51,5 +50,4 @@ func listCommands() {
 	fmt.Println("- serve        Starts the development server for both backend and frontend.")
 	fmt.Println("- make:model   Creates a new model file with GORM support.")
 	fmt.Println("- make:migrate Creates a new migration file.")
-	fmt.Println("- make:schema  Initializes the database schema using GORM.")
 }
