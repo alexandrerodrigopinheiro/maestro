@@ -56,7 +56,7 @@ func (c *NewProjectCommand) Execute(args []string) {
 
 	// Initialize React frontend
 	fmt.Println("Initializing frontend...")
-	if err := runCommand("npx", "create-react-app", "frontend"); err != nil {
+	if err := runCommand("npx", "create-react-app", "frontend", "--", "--tamplate", "typescript"); err != nil {
 		fmt.Printf("Failed to initialize React frontend: %s\n", err)
 		CleanupProject(projectName)
 		return
@@ -101,10 +101,6 @@ APP_URL=http://localhost
 APP_VERSION=1.3.0
 APP_TIMEZONE="America/Sao_Paulo"
 
-LOG_CHANNEL=stack
-LOG_DEPRECATIONS_CHANNEL=null
-LOG_LEVEL=debug
-
 DB_CONNECTION=mysql
 DB_HOST=localhost
 DB_PORT=3306
@@ -115,6 +111,8 @@ DB_PASSWORD=
 REDIS_HOST=127.0.0.1
 REDIS_PASSWORD=null
 REDIS_PORT=6379
+
+CACHE_DRIVER=text
 `
 	envPathBackend := ".env"
 	err := os.WriteFile(envPathBackend, []byte(envContentBackend), 0644)

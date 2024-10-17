@@ -8,6 +8,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // Atoi converts a string to an integer.
@@ -44,9 +47,10 @@ func ToSnakeCase(str string) string {
 func ToPascalCase(str string) string {
 	// Split the string by underscores
 	words := strings.Split(str, "_")
+	titleCaser := cases.Title(language.Und)
 	for i, word := range words {
 		// Capitalize the first letter of each word and append to result
-		words[i] = strings.Title(word)
+		words[i] = titleCaser.String(word)
 	}
 	return strings.Join(words, "")
 }
